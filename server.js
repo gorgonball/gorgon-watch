@@ -41,7 +41,7 @@ app.post("/webhook", async (req, res) => {
 });
 
 async function sendMessage(chatId, text, markdown = false) {
-  await axios.post(${TELEGRAM_API}/sendMessage, {
+  await axios.post(`${TELEGRAM_API}/sendMessage`, {
     chat_id: chatId,
     text,
     parse_mode: markdown ? "Markdown" : undefined,
