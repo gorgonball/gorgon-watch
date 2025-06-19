@@ -9,7 +9,7 @@ app.use(express.json());
 
 // Your bot token and Telegram API base URL — use backticks for template literals
 const BOT_TOKEN = process.env.BOT_TOKEN || '7394578125:AAEUPzDbotoyKatxzieYu7VJak9C9ZoK7ko';
-const TELEGRAM_API = https://api.telegram.org/bot${BOT_TOKEN};
+const TELEGRAM_API = 'https://api.telegram.org/bot${BOT_TOKEN}';
 
 // Webhook endpoint to receive updates from Telegram
 app.post('/webhook', async (req, res) => {
