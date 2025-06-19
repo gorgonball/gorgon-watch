@@ -1,3 +1,8 @@
+const { Connection, PublicKey } = require('@solana/web3.js');
+
+// Initialize Solana connection (add this right after your Telegram setup)
+const solanaRpcUrl = process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com'; 
+const solanaConnection = new Connection(solanaRpcUrl, 'confirmed');
 const express = require('express');
 const axios = require('axios');
 require('dotenv').config();
@@ -49,6 +54,36 @@ async function sendMessage(chatId, text) {
       botToken: BOT_TOKEN ? '***'+BOT_TOKEN.slice(-4) : 'MISSING'
     });
   }
+  async function monitorSolanaWallets() {
+  setInterval(async () => {
+    for (const wallet of trackedWallets) {
+      try {
+        // Check for new token accounts
+        const tokenAccounts = await solanaConnection.getParsedTokenAccountsByOwner(
+          new PublicKey(wallet),
+          { programId: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA') }
+        );
+
+        // Detect if this wallet created any new tokens
+        const creatorTokens = tokenAccounts.value.filter(account => 
+          account.account.data.parsed.info.mintAuthority === wallet
+        );
+
+        if (creatorTokens.length > 0) {
+          await sendMessage(
+            process.env.YOUR_CHAT_ID,
+            `🚨 New SPL Token Created!\n` +
+            `Creator: ${wallet}\n` +
+            `Token: ${creatorTokens[0].account.data.parsed.info.mint}\n` +
+            `View: https://solscan.io/token/${creatorTokens[0].account.data.parsed.info.mint}`
+          );
+        }
+      } catch (err) {
+        console.error(`Error checking ${wallet}:`, err);
+      }
+    }
+  }, 300000); // Check every 5 minutes
+}
 }
 
 // Start server
@@ -56,4 +91,8 @@ const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log(`✅ Gorgon Watch is live on port ${PORT}`);
   console.log('Please set your webhook URL to: https://gorgon-watch.onrender.com/webhook');
+app.listen(PORT, () => {
+  console.log(`Bot running on port ${PORT}`);
+  monitorSolanaWallets(); // Start Solana monitoring
+});
 });
