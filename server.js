@@ -7,7 +7,9 @@ const app = express();
 // Replace with your actual bot token
 const BOT_TOKEN = '7394578125:AAEUPzDbotoyKatxzieYu7VJak9C9ZoK7ko';
 const TELEGRAM_API = 'https://api.telegram.org/bot${BOT_TOKEN}';
-
+await axios.post(${TELEGRAM_API}/sendMessage, {
+  chat_id: chatId,
+  text: 'Hello!',
 // Parse incoming JSON from Telegram
 app.use(express.json());
 
@@ -17,7 +19,11 @@ app.post('/webhook', async (req, res) => {
   console.log('➡️ Incoming update:', update);
 
   if (update.message && update.message.text) {
-    const chatId = update.message.chat.id;
+    const chatId = update.message?.chat?.id;
+  if (!chatId) {
+  console.log("No chat ID found in update:", update);
+  return res.sendStatus(200);
+}
     const text = update.message.text;
 
     if (text === '/start') {
