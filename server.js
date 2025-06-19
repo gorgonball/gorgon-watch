@@ -30,7 +30,7 @@ app.post("/webhook", async (req, res) => {
 
   if (text === "!listwallets") {
     const list = [...trackedWallets].join("\n") || "No wallets tracked.";
-    await sendMessage(chatId, 📄 Tracked Wallets:\n${list}, true);
+    await sendMessage(chatId, `📄 Tracked Wallets:\n${list}`, true);
   }
 
   if (text === "!test") {
