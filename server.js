@@ -19,13 +19,13 @@ app.post("/webhook", async (req, res) => {
   const text = msg.text;
 
   if (text === "/start") {
-    await sendMessage(chatId, "👁️ Gorgon Watch is active.");
+    await sendMessage(chatId, `👁️ Gorgon Watch is active.`);
   }
 
   if (text.startsWith("!addwallet ")) {
     const wallet = text.split(" ")[1];
     trackedWallets.add(wallet);
-    await sendMessage(chatId, '✅ Added wallet: \${wallet}\`, true);
+    await sendMessage(chatId, `✅ Added wallet: ${wallet}`, true);
   }
 
   if (text === "!listwallets") {
