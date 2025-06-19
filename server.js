@@ -87,7 +87,7 @@ async function sendMessage(chatId, text) {
 }
 
 // Start server
-const PORT = process.env.PORT || 3000; // Render provides 
+const PORT = process.env.PORT || 3000; // Render will auto-assign a port 
 app.listen(PORT, () => {
   console.log(`✅ Gorgon Watch is live on port ${PORT}`);
   console.log('Please set your webhook URL to: https://gorgon-watch.onrender.com/webhook');
