@@ -34,7 +34,7 @@ app.post("/webhook", async (req, res) => {
   }
 
   if (text === "!test") {
-    await sendMessage(GROUP_ID, 🚨 Dev Wallet Alert Fired (Test Mode));
+    await sendMessage(GROUP_ID, `🚨 Dev Wallet Alert Fired (Test Mode)`);
   }
 
   res.sendStatus(200);
