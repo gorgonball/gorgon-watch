@@ -6,7 +6,7 @@ const app = express();
 
 // Replace with your actual bot token
 const BOT_TOKEN = '7394578125:AAEUPzDbotoyKatxzieYu7VJak9C9ZoK7ko';
-const TELEGRAM_API = https://api.telegram.org/bot${BOT_TOKEN};
+const TELEGRAM_API = 'https://api.telegram.org/bot${BOT_TOKEN}';
 
 // Parse incoming JSON from Telegram
 app.use(express.json());
