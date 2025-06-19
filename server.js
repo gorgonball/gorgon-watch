@@ -6,7 +6,7 @@ const app = express();
 app.use(bodyParser.json());
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const TELEGRAM_API = https://api.telegram.org/bot${BOT_TOKEN};
+const TELEGRAM_API = 'https://api.telegram.org/bot${BOT_TOKEN}';
 const GROUP_ID = "-1002791246922";
 
 const trackedWallets = new Set();
