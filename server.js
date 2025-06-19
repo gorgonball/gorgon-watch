@@ -14,18 +14,18 @@ const TELEGRAM_API = `https://api.telegram.org/bot${BOT_TOKEN}`;
 // Webhook endpoint to receive updates from Telegram
 app.post('/webhook', async (req, res) => {
   const update = req.body;
-  console.log('➡️ Incoming update:', update);
+  console.log(`➡️ Incoming update:`, update);
 
   if (update.message && update.message.text) {
     const chatId = update.message.chat.id;
     const text = update.message.text;
 
     if (text === '/start') {
-      await sendMessage(chatId, '👋 Gorgon Watch is now live.');
+      await sendMessage(chatId, `👋 Gorgon Watch is now live.`);
     } else if (text === '/test') {
-      await sendMessage(chatId, '✅ Test command received.');
+      await sendMessage(chatId, `✅ Test command received.`);
     } else {
-      await sendMessage(chatId, '❓ Unknown command: ${text}');
+      await sendMessage(chatId, `❓ Unknown command: ${text}`);
     }
   }
 
@@ -35,17 +35,17 @@ app.post('/webhook', async (req, res) => {
 // Function to send message back to Telegram chat
 async function sendMessage(chatId, text) {
   try {
-    await axios.post('${TELEGRAM_API}/sendMessage', {
+    await axios.post(`${TELEGRAM_API}/sendMessage`, {
       chat_id: 1002791246922,
       text: text,
     });
   } catch (err) {
-    console.error('❌ Error sending message:', err.response?.data || err.message);
+    console.error(`❌ Error sending message:`, err.response?.data || err.message);
   }
 }
 
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log('✅ Gorgon Watch is live on port ${PORT}');
+  console.log(`✅ Gorgon Watch is live on port ${PORT}`);
 });
