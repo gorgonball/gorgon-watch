@@ -35,7 +35,7 @@ app.post('/webhook', async (req, res) => {
 // Function to send messages
 async function sendMessage(chatId, text) {
   try {
-    await axios.post(${TELEGRAM_API}/sendMessage, {
+    await axios.post('${TELEGRAM_API}/sendMessage', {
       chat_id: chatId,
       text: text,
     });
