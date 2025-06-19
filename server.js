@@ -4,27 +4,20 @@ require('dotenv').config();
 
 const app = express();
 
-async function main() {
-  // Replace with your actual bot token
-const BOT_TOKEN = '7394578125:AAEUPzDbotoyKatxzieYu7VJak9C9ZoK7ko';
-const TELEGRAM_API = 'https://api.telegram.org/bot${BOT_TOKEN}';
-await axios.post('${TELEGRAM_API}/sendMessage', {
-  chat_id: 108683127,
-  text: 'Hello!',
-// Parse incoming JSON from Telegram
+// Use express.json() middleware outside of any async call
 app.use(express.json());
 
-// Webhook endpoint to receive updates
+// Your bot token and Telegram API base URL — use backticks for template literals
+const BOT_TOKEN = process.env.BOT_TOKEN || '7394578125:AAEUPzDbotoyKatxzieYu7VJak9C9ZoK7ko';
+const TELEGRAM_API = https://api.telegram.org/bot${BOT_TOKEN};
+
+// Webhook endpoint to receive updates from Telegram
 app.post('/webhook', async (req, res) => {
   const update = req.body;
   console.log('➡️ Incoming update:', update);
 
   if (update.message && update.message.text) {
-    const chatId = update.message?.chat?.id;
-  if (!chatId) {
-  console.log("No chat ID found in update:", update);
-  return res.sendStatus(200);
-}
+    const chatId = update.message.chat.id;
     const text = update.message.text;
 
     if (text === '/start') {
@@ -39,11 +32,11 @@ app.post('/webhook', async (req, res) => {
   res.sendStatus(200);
 });
 
-// Function to send messages
+// Function to send message back to Telegram chat
 async function sendMessage(chatId, text) {
   try {
     await axios.post('${TELEGRAM_API}/sendMessage', {
-      chat_id: chatId,
+      chat_id: 1002791246922,
       text: text,
     });
   } catch (err) {
@@ -51,8 +44,8 @@ async function sendMessage(chatId, text) {
   }
 }
 
-// Start the Express server
+// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log('✅ Gorgon Watch is live on port ${PORT}');
+  console.log(✅ Gorgon Watch is live on port ${PORT});
 });
