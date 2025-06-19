@@ -25,7 +25,7 @@ app.post('/webhook', async (req, res) => {
     } else if (text === '/test') {
       await sendMessage(chatId, '✅ Test command received.');
     } else {
-      await sendMessage(chatId, ❓ Unknown command: ${text});
+      await sendMessage(chatId, '❓ Unknown command: ${text}');
     }
   }
 
