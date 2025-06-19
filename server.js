@@ -4,11 +4,12 @@ require('dotenv').config();
 
 const app = express();
 
-// Replace with your actual bot token
+async function main() {
+  // Replace with your actual bot token
 const BOT_TOKEN = '7394578125:AAEUPzDbotoyKatxzieYu7VJak9C9ZoK7ko';
 const TELEGRAM_API = 'https://api.telegram.org/bot${BOT_TOKEN}';
 await axios.post(${TELEGRAM_API}/sendMessage, {
-  chat_id: chatId,
+  chat_id: 108683127,
   text: 'Hello!',
 // Parse incoming JSON from Telegram
 app.use(express.json());
