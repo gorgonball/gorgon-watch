@@ -51,4 +51,4 @@ async function sendMessage(chatId, text, markdown = false) {
 app.get("/", (_, res) => res.send("Gorgon Watch Running"));
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(Bot live on ${PORT}));
+app.listen(PORT, () => console.log(`Bot live on ${PORT}`));
