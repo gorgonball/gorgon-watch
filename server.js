@@ -47,5 +47,5 @@ async function sendMessage(chatId, text) {
 // Start the Express server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(✅ Gorgon Watch is live on port ${PORT});
+  console.log('✅ Gorgon Watch is live on port ${PORT}');
 });
