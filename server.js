@@ -81,7 +81,7 @@ app.post('/webhook', async (req, res) => {
 
   await sendMessage(chatId, message);
 }
-  }
+  
   else if (text === '/start') {
     await sendMessage(chatId, `👋 Bot is running in DM mode. Use /addwallet [address]`);
   }
