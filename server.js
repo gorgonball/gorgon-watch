@@ -66,7 +66,7 @@ app.post('/webhook', async (req, res) => {
   await sendMessage(chatId, 
     `✅ Added wallet: ${nickname ? `${nickname} (${address})` : address}`
   );
-}
+
   }
   else if (text === '/listwallets') {
   if (trackedWallets.size === 0) {
