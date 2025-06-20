@@ -5,7 +5,7 @@ const solanaRpcUrl = process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.sol
 const solanaConnection = new Connection(solanaRpcUrl, 'confirmed');
 const express = require('express');
 const axios = require('axios');
-const PORT = process.env.PORT || 3000;  // MUST use process.env.PORT for Render
+const PORT = parseInt(process.env.PORT) || 3000;  // MUST use process.env.PORT for Render
 require('dotenv').config();
 
 const app = express();
@@ -93,6 +93,7 @@ app.on('error', (err) => {
   console.error('Server error:', err);
   process.exit(1); // Restart the server if binding fails
 });
+console.log("CONFIRMED PORT:", PORT, "ENV PORT:", process.env.PORT);
 app.listen(PORT, () => {
   console.log(`✅ Gorgon Watch is live on port ${PORT}`);
   console.log('Please set your webhook URL to: https://gorgon-watch.onrender.com/webhook');
