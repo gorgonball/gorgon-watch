@@ -8,7 +8,7 @@ const solanaRpcUrl = process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.sol
 const solanaConnection = new Connection(solanaRpcUrl, 'confirmed');
 
 // Tracked wallets
-const trackedWallets = new Set();
+const trackedWallets = new Map(); // Format : Map(address -> nickname)
 
 // Debugging logs
 console.log("\n⚡ ENVIRONMENT VARIABLES DUMP:");
@@ -35,25 +35,70 @@ app.post('/webhook', async (req, res) => {
 
   // === COMMAND HANDLING ===
   if (text?.startsWith('/addwallet')) {
-    const address = text.split(' ')[1]?.trim();
-    if (address && isValidSolanaAddress(address)) {
-      trackedWallets.add(address);
-      await sendMessage(chatId, `✅ Added wallet: ${address}`);
-    } else {
-      await sendMessage(chatId, `❌ Invalid Solana address`);
-    }
+  const parts = text.split(' ');
+  const address = parts[1]?.trim();
+  const nickname = parts[2]?.trim(); // Optional nickname
+
+  if (!address || !isValidSolanaAddress(address)) {
+    await sendMessage(chatId, `❌ Invalid Solana address`);
+    return;
+  }
+
+  else if (text?.startsWith('/nickname')) {
+  const parts = text.split(' ');
+  const address = parts[1]?.trim();
+  const nickname = parts.slice(2).join(' ').trim();
+
+  if (!trackedWallets.has(address)) {
+    await sendMessage(chatId, '❌ Wallet not tracked. Add it first with /addwallet');
+    return;
+  }
+
+  trackedWallets.set(address, nickname || '');
+  await sendMessage(chatId, 
+    nickname 
+      ? `🏷 Nickname set for ${address}: "${nickname}"`
+      : `🗑 Removed nickname for ${address}`
+  );
+}
+
+  trackedWallets.set(address, nickname || address.slice(0, 4) + '...' + address.slice(-4));
+  await sendMessage(chatId, 
+    `✅ Added wallet: ${nickname ? `${nickname} (${address})` : address}`
+  );
+}
   }
   else if (text === '/listwallets') {
-    await sendMessage(chatId, 
-      trackedWallets.size > 0 
-        ? `📋 Tracked Wallets:\n${[...trackedWallets].join('\n')}`
-        : 'No wallets being tracked'
-    );
+  if (trackedWallets.size === 0) {
+    await sendMessage(chatId, 'No wallets being tracked');
+    return;
+  }
+
+  let message = '📋 Tracked Wallets:\n';
+  trackedWallets.forEach((nickname, address) => {
+    message += `\n• ${nickname || 'No nickname'} (${address})`;
+  });
+
+  await sendMessage(chatId, message);
+}
   }
   else if (text === '/start') {
     await sendMessage(chatId, `👋 Bot is running in DM mode. Use /addwallet [address]`);
   }
+else if (text?.startsWith('/removewallet')) {
+  const address = text.split(' ')[1]?.trim();
+  if (!address) {
+    await sendMessage(chatId, `❌ Usage: /removewallet <address>`);
+    return;
+  }
 
+  if (trackedWallets.has(address)) {
+    trackedWallets.delete(address);
+    await sendMessage(chatId, `🗑 Removed wallet: ${address}`);
+  } else {
+    await sendMessage(chatId, `❌ Wallet not found in tracking list`);
+  }
+}
   res.sendStatus(200);
 });
 
@@ -98,13 +143,14 @@ async function monitorSolanaWallets() {
       );
 
       if (newTokens.length > 0) {
-        await sendMessage(
-          process.env.YOUR_CHAT_ID, // HARDCODED to your DM
-          `🚨 New Token Created!\n` +
-          `• Creator: ${wallet}\n` +
-          `• Token: ${newTokens[0].account.data.parsed.info.mint}\n` +
-          `• Explorer: https://solscan.io/token/${newTokens[0].account.data.parsed.info.mint}`
-        );
+        // In monitorSolanaWallets():
+await sendMessage(
+  process.env.YOUR_CHAT_ID,
+  `🚨 New Token Created!\n` +
+  `• Creator: ${trackedWallets.get(wallet) || wallet}\n` + // Show nickname if exists
+  `• Token: ${newTokens[0].account.data.parsed.info.mint}\n` +
+  `• Explorer: https://solscan.io/token/${newTokens[0].account.data.parsed.info.mint}`
+);
       }
     } catch (err) {
       console.error(`Error checking ${wallet}:`, err.message);
