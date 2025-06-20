@@ -4,15 +4,19 @@ const { Connection, PublicKey } = require('@solana/web3.js');
 const solanaRpcUrl = process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com'; 
 const solanaConnection = new Connection(solanaRpcUrl, 'confirmed');
 const express = require('express');
-app.use(express.json());
-require('dotenv').config();
 const axios = require('axios');
+require('dotenv').config();
+
 // ================= DEBUGGING LOGS ================= //
 console.log("\n⚡ ENVIRONMENT VARIABLES DUMP:");
 console.log("PORT:", process.env.PORT);
 console.log("NODE_ENV:", process.env.NODE_ENV);
 console.log("All ENV keys:", Object.keys(process.env)); 
 // ================================================== //
+
+const app = express();
+app.use(express.json());
+
 process.env.PORT = process.env.PORT || 3000;
 const PORT = parseInt(process.env.PORT) || 3000;  // MUST use process.env.PORT for Render
 if (PORT === 10000) process.exit(1);{
