@@ -5,7 +5,18 @@ const solanaRpcUrl = process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.sol
 const solanaConnection = new Connection(solanaRpcUrl, 'confirmed');
 const express = require('express');
 const axios = require('axios');
+// ================= DEBUGGING LOGS ================= //
+console.log("\n⚡ ENVIRONMENT VARIABLES DUMP:");
+console.log("PORT:", process.env.PORT);
+console.log("NODE_ENV:", process.env.NODE_ENV);
+console.log("All ENV keys:", Object.keys(process.env)); 
+// ================================================== //
+process.env.PORT = process.env.PORT || 3000;
 const PORT = parseInt(process.env.PORT) || 3000;  // MUST use process.env.PORT for Render
+if (PORT === 10000) {
+  console.error("⚠️ ERROR: Port 10000 is blocked");
+  process.exit(1); // Crash immediately to force Render to restart
+}
 require('dotenv').config();
 
 const app = express();
@@ -86,14 +97,23 @@ async function sendMessage(chatId, text) {
   }, 300000); // Check every 5 minutes
 }
 }
+process.on('uncaughtException', (err) => {
+  console.error('💥 UNCAUGHT EXCEPTION:', err);
+  process.exit(1);
+});
 
+process.on('unhandledRejection', (err) => {
+  console.error('💥 UNHANDLED REJECTION:', err);
+});
 // Start server
 // Add this to prevent crashes
 app.on('error', (err) => {
   console.error('Server error:', err);
   process.exit(1); // Restart the server if binding fails
 });
-console.log("CONFIRMED PORT:", PORT, "ENV PORT:", process.env.PORT);
+console.log("\n🔌 PORT BINDING DEBUG:");
+console.log("Final PORT value:", PORT);
+console.log("typeof PORT:", typeof PORT);
 app.listen(PORT, () => {
   console.log(`✅ Gorgon Watch is live on port ${PORT}`);
   console.log('Please set your webhook URL to: https://gorgon-watch.onrender.com/webhook');
