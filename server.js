@@ -1,4 +1,4 @@
-/ Nuclear option - override Render's forced port
+// Nuclear option - override Render's forced port
 if (process.env.PORT === '10000') {
   process.env.PORT = '3000'; // Or any other available port
   console.warn('⚠️ Render port override detected. Forcing PORT=3000');
