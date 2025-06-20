@@ -1,9 +1,16 @@
+/ Nuclear option - override Render's forced port
+if (process.env.PORT === '10000') {
+  process.env.PORT = '3000'; // Or any other available port
+  console.warn('⚠️ Render port override detected. Forcing PORT=3000');
+}
 const { Connection, PublicKey } = require('@solana/web3.js');
 
 // Initialize Solana connection (add this right after your Telegram setup)
 const solanaRpcUrl = process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com'; 
 const solanaConnection = new Connection(solanaRpcUrl, 'confirmed');
 const express = require('express');
+const app = express();
+
 const axios = require('axios');
 // ================= DEBUGGING LOGS ================= //
 console.log("\n⚡ ENVIRONMENT VARIABLES DUMP:");
@@ -13,7 +20,7 @@ console.log("All ENV keys:", Object.keys(process.env));
 // ================================================== //
 process.env.PORT = process.env.PORT || 3000;
 const PORT = parseInt(process.env.PORT) || 3000;  // MUST use process.env.PORT for Render
-if (PORT === 10000) {
+if (PORT === 10000) process.exit(1);{
   console.error("⚠️ ERROR: Port 10000 is blocked");
   process.exit(1); // Crash immediately to force Render to restart
 }
@@ -111,9 +118,12 @@ app.on('error', (err) => {
   console.error('Server error:', err);
   process.exit(1); // Restart the server if binding fails
 });
-console.log("\n🔌 PORT BINDING DEBUG:");
-console.log("Final PORT value:", PORT);
-console.log("typeof PORT:", typeof PORT);
+const PORT = parseInt(process.env.PORT) || 3000;
+
+if (PORT === 10000) {
+  console.error('❌ FATAL: Port 10000 is blocked by Render');
+  process.exit(1); // Force crash to prevent binding issues
+}
 app.listen(PORT, () => {
   console.log(`✅ Gorgon Watch is live on port ${PORT}`);
   console.log('Please set your webhook URL to: https://gorgon-watch.onrender.com/webhook');
