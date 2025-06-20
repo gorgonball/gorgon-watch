@@ -9,8 +9,7 @@ const { Connection, PublicKey } = require('@solana/web3.js');
 const solanaRpcUrl = process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com'; 
 const solanaConnection = new Connection(solanaRpcUrl, 'confirmed');
 const express = require('express');
-const app = express();
-
+app.use(express.json());
 const axios = require('axios');
 // ================= DEBUGGING LOGS ================= //
 console.log("\n⚡ ENVIRONMENT VARIABLES DUMP:");
@@ -25,9 +24,6 @@ if (PORT === 10000) process.exit(1);{
   process.exit(1); // Crash immediately to force Render to restart
 }
 require('dotenv').config();
-
-const app = express();
-app.use(express.json());
 
 const BOT_TOKEN = process.env.BOT_TOKEN || '7394578125:AAEUPzDbotoyKatxzieYu7VJak9C9ZoK7ko';
 const TELEGRAM_API = `https://api.telegram.org/bot${BOT_TOKEN}`;
