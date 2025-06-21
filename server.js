@@ -17,7 +17,11 @@ console.log("NODE_ENV:", process.env.NODE_ENV);
 
 // Express setup
 const app = express();
-app.use(express.json());
+app.use((req, res, next) => {
+  req.setTimeout(5000); // 5 second timeout
+  res.setTimeout(5000);
+  next();
+});
 
 // Telegram config
 const BOT_TOKEN = process.env.BOT_TOKEN;
@@ -25,15 +29,25 @@ const TELEGRAM_API = `https://api.telegram.org/bot${BOT_TOKEN}`;
 
 // Webhook endpoint
 app.post('/webhook', async (req, res) => {
+  res.sendStatus(200);
   const update = req.body;
+
+  // Process update asynchronously
+  processUpdate(req.body).catch(err => {
+    console.error('⚠️ Update processing failed:', err);
+  });
+});
   
   // IGNORE all non-DM messages (channels/groups)
+async function processUpdate(update) {
   if (!update.message) return res.sendStatus(200);
 
   const chatId = update.message.chat.id;
   const text = update.message.text;
+  console.log(`📩 Processing update:`, text?.slice(0, 50));
 
   // === COMMAND HANDLING ===
+  try{
   if (text?.startsWith('/addwallet')) {
   const parts = text.split(' ');
   const address = parts[1]?.trim();
@@ -43,6 +57,7 @@ app.post('/webhook', async (req, res) => {
     await sendMessage(chatId, `❌ Invalid Solana address`);
     return;
   }
+} }
 
   else if (text?.startsWith('/nickname')) {
   const parts = text.split(' ');
@@ -53,6 +68,9 @@ app.post('/webhook', async (req, res) => {
     await sendMessage(chatId, '❌ Wallet not tracked. Add it first with /addwallet');
     return;
   }
+  if trackedWallets.add(address);
+      await sendMessage(chatId, `✅ Added wallet: ${address}`);
+    }
 
   trackedWallets.set(address, nickname || '');
   await sendMessage(chatId, 
